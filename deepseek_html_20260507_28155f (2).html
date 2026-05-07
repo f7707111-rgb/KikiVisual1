@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>KIKI | Сергей — графический дизайнер</title>
+    <!-- Шрифт Syne ExtraBold 800 -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: auto; /* стандартный курсор */
+        }
+
+        body {
+            background-color: #000000;
+            font-family: 'Syne', 'Arial Black', sans-serif;
+            font-weight: 800;
+            color: #ffffff;
+            overflow-x: hidden;
+            line-height: 1.2;
+        }
+
+        /* Интерактивный фон из частиц */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Основной контейнер */
+        .main-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem 5rem;
+        }
+
+        /* Стеклянные карточки */
+        .glass-card {
+            background: rgba(20, 20, 20, 0.3);
+            backdrop-filter: blur(14px) saturate(180%);
+            border-radius: 64px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.5);
+            transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        .glass-card:hover {
+            background: rgba(35, 35, 35, 0.45);
+            backdrop-filter: blur(18px) saturate(200%);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: scale(1.01);
+        }
+
+        /* Заголовки */
+        h1, h2, h3, .title-big, .hero-name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        /* Стиль команды без рамок */
+        .code-snip {
+            font-family: 'Courier New', monospace;
+            background: transparent;
+            backdrop-filter: none;
+            padding: 0;
+            border-left: none;
+            display: inline-block;
+            font-size: 1rem;
+            color: #ddd;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .typed-command {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: #ccc;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .hero-section {
+            margin-bottom: 6rem;
+        }
+
+        .hero-card {
+            padding: 3rem 3rem;
+            border-radius: 72px;
+        }
+
+        .hero-name {
+            font-size: clamp(3.5rem, 10vw, 7rem);
+            line-height: 1;
+            margin: 0.5rem 0;
+        }
+
+        .hero-tag {
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            font-weight: 800;
+            opacity: 0.8;
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 0.4rem 1.5rem;
+            border-radius: 60px;
+            backdrop-filter: blur(8px);
+            margin-top: 1rem;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin-top: 1.8rem;
+            font-family: system-ui, -apple-system, 'Segoe UI', monospace;
+            font-weight: 400;
+            opacity: 0.85;
+            line-height: 1.5;
+        }
+
+        /* Секция специализации — инструменты и готовность работать */
+        .skills {
+            margin: 5rem 0;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 6vw, 3.2rem);
+            margin-bottom: 2rem;
+            border-left: 4px solid white;
+            padding-left: 1.2rem;
+        }
+
+        .tools-card {
+            padding: 2.5rem 3rem;
+            border-radius: 56px;
+            text-align: center;
+        }
+
+        .tools-icons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tool-item {
+            font-size: 1.4rem;
+            font-weight: 800;
+            font-family: 'Syne', monospace;
+            background: rgba(255,255,255,0.08);
+            padding: 0.6rem 1.6rem;
+            border-radius: 100px;
+            letter-spacing: 1px;
+            backdrop-filter: blur(4px);
+        }
+
+        .commitment-text {
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            font-family: system-ui, monospace;
+            font-weight: 400;
+            opacity: 0.9;
+            line-height: 1.4;
+            border-top: 1px dashed rgba(255,255,255,0.3);
+            padding-top: 1.8rem;
+        }
+
+        /* Контакты */
+        .contacts-block {
+            margin: 5rem 0 2rem;
+            padding: 2.8rem 3rem;
+            border-radius: 72px;
+        }
+
+        .contact-flex {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .contact-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .contact-label {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+        }
+
+        .contact-info {
+            font-size: 1.3rem;
+            font-weight: 800;
+            word-break: break-all;
+        }
+
+        .contact-info a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px dotted rgba(255,255,255,0.4);
+        }
+
+        .contact-info a:hover {
+            border-bottom: 1px solid white;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            font-size: 0.8rem;
+            opacity: 0.4;
+            font-family: monospace;
+        }
+
+        @media (max-width: 750px) {
+            .main-content {
+                padding: 1.5rem;
+            }
+            .hero-card, .contacts-block, .tools-card {
+                padding: 1.8rem;
+            }
+            .contact-info {
+                font-size: 1rem;
+            }
+            .tool-item {
+                font-size: 1rem;
+                padding: 0.4rem 1rem;
+            }
+            .commitment-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="main-content">
+        <!-- Hero-секция -->
+        <div class="hero-section">
+            <div class="glass-card hero-card">
+                <div class="code-snip">
+                    <div id="typedLine" class="typed-command"></div>
+                </div>
+                <div class="hero-name">KIKI</div>
+                <div class="hero-tag">Графический дизайнер / Визуальная артистка</div>
+                <div class="hero-desc">
+                    Привет! Я Сергей. Уже год я погружен в мир графического дизайна, обучаясь у лучших мастеров индустрии. 
+                    Этот канал — мое портфолио и лаборатория. Здесь я делюсь своими работами и полезными фишками, 
+                    которые помогут вам создавать дизайн с характером.
+                </div>
+            </div>
+        </div>
+
+        <!-- Блок специализации — Инструменты + готовность работать -->
+        <div class="skills">
+            <h2>Инструменты и подход</h2>
+            <div class="glass-card tools-card">
+                <div class="tools-icons">
+                    <span class="tool-item">Adobe Illustrator</span>
+                    <span class="tool-item">Adobe Photoshop</span>
+                    <span class="tool-item">Figma</span>
+                </div>
+                <div class="commitment-text">
+                    Я готов работать на все 100 — полная отдача, дедлайны и качество превыше всего. 
+                    Вкладываю душу в каждый проект, чтобы дизайн говорил сам за себя. 
+                    От идеи до макета — я с вами на каждом этапе.
+                </div>
+            </div>
+        </div>
+
+        <!-- Контакты -->
+        <div class="glass-card contacts-block">
+            <div class="contact-flex">
+                <div class="contact-item">
+                    <div class="contact-label">TELEGRAM / ПОРТФОЛИО</div>
+                    <div class="contact-info">@Malone_lam000</div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">EMAIL</div>
+                    <div class="contact-info">f7707111@gmail.com</div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">РЕЖИМ РАБОТЫ</div>
+                    <div class="contact-info">Удалённо / Весь мир</div>
+                </div>
+            </div>
+        </div>
+        <footer>© KIKI — графический дизайн в чёрно-белой гамме | Эффект жидкого стекла</footer>
+    </div>
+
+    <script>
+        // ---------- ПЕЧАТАЮЩАЯСЯ СТРОКА СО ЗВУКОМ ----------
+        const commandString = `main( ) {\n    printf("design, transform");\n}`;
+        const typedElement = document.getElementById('typedLine');
+        let index = 0;
+        
+        function playTypingSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.frequency.value = 1200;
+                gainNode.gain.value = 0.08;
+                oscillator.type = 'sine';
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.1);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.05);
+                setTimeout(() => {
+                    audioCtx.close().catch(e=>null);
+                }, 200);
+            } catch(e) { }
+        }
+        
+        function typeNextChar() {
+            if (index < commandString.length) {
+                let currentChar = commandString[index];
+                typedElement.innerHTML += currentChar;
+                index++;
+                if (currentChar !== ' ' && currentChar !== '\n') {
+                    playTypingSound();
+                } else if (currentChar === '\n') {
+                    playTypingSound();
+                }
+                setTimeout(typeNextChar, 65);
+            }
+        }
+        
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (typedElement) typeNextChar();
+            }, 400);
+        });
+        
+        // ---------- ФОН ИЗ ЧАСТИЦ (крупные точки, реагируют на курсор) ----------
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        let mouseX = null, mouseY = null;
+        const mouseRadius = 140;
+        
+        class Particle {
+            constructor(x, y, size, speedX, speedY, opacity) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.speedX = speedX;
+                this.speedY = speedY;
+                this.opacity = opacity;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.fill();
+            }
+            update() {
+                if (mouseX !== null && mouseY !== null) {
+                    const dx = this.x - mouseX;
+                    const dy = this.y - mouseY;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < mouseRadius) {
+                        const angle = Math.atan2(dy, dx);
+                        const force = (mouseRadius - dist) / mouseRadius;
+                        const moveX = Math.cos(angle) * force * 1.6;
+                        const moveY = Math.sin(angle) * force * 1.6;
+                        this.x += moveX;
+                        this.y += moveY;
+                    } else {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                    }
+                } else {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                }
+                if (this.x < 0 || this.x > width) {
+                    this.speedX *= -0.98;
+                    this.x = Math.min(Math.max(this.x, 0), width);
+                }
+                if (this.y < 0 || this.y > height) {
+                    this.speedY *= -0.98;
+                    this.y = Math.min(Math.max(this.y, 0), height);
+                }
+                this.x = Math.min(Math.max(this.x, 0), width);
+                this.y = Math.min(Math.max(this.y, 0), height);
+            }
+        }
+        
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.min(220, Math.floor(width * height / 5500));
+            for (let i = 0; i < particleCount; i++) {
+                let size = Math.random() * 3.8 + 2.2;  // крупные точки
+                let x = Math.random() * width;
+                let y = Math.random() * height;
+                let speedX = (Math.random() - 0.5) * 0.35;
+                let speedY = (Math.random() - 0.5) * 0.35;
+                let opacity = Math.random() * 0.7 + 0.3;
+                particles.push(new Particle(x, y, size, speedX, speedY, opacity));
+            }
+        }
+        
+        function animateParticles() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+            ctx.fillRect(0, 0, width, height);
+            
+            for (let p of particles) {
+                p.update();
+                p.draw();
+            }
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 0.8;
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < 110) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initParticles();
+        }
+        
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        window.addEventListener('mouseleave', () => {
+            mouseX = null;
+            mouseY = null;
+        });
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+        });
+        
+        resizeCanvas();
+        animateParticles();
+        
+        document.body.style.opacity = '0';
+        setTimeout(() => {
+            document.body.style.transition = 'opacity 0.7s ease';
+            document.body.style.opacity = '1';
+        }, 100);
+    </script>
+</body>
+</html>
